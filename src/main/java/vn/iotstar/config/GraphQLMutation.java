@@ -26,7 +26,6 @@ public class GraphQLMutation {
     @Autowired
     private CategoryService categoryService;
 
-    // ================== PRODUCT ==================
     @MutationMapping
     public Product createProduct(@Argument String title,
                                  @Argument Double price,
@@ -75,7 +74,7 @@ public class GraphQLMutation {
         return false;
     }
 
-    // ================== CATEGORY ==================
+    
     @MutationMapping
     public Category createCategory(@Argument String name,
                                    @Argument String images) {
@@ -108,7 +107,7 @@ public class GraphQLMutation {
         return false;
     }
 
-    // ================== USER ==================
+
     @MutationMapping
     public User createUser(@Argument String fullname,
                            @Argument String password,

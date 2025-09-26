@@ -26,7 +26,6 @@ public class GraphQLQuery {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    // ================== PRODUCT ==================
     @QueryMapping
     public List<Product> getAllProductsSortedByPrice() {
         return productRepository.findAllByOrderByPriceAsc();
@@ -42,7 +41,6 @@ public class GraphQLQuery {
         return productRepository.findById(id).orElse(null);
     }
 
-    // ================== CATEGORY ==================
     @QueryMapping
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
@@ -53,7 +51,6 @@ public class GraphQLQuery {
         return categoryRepository.findById(id).orElse(null);
     }
 
-    // ================== USER ==================
     @QueryMapping
     public List<User> getAllUsers() {
         return userRepository.findAll();

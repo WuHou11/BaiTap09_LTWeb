@@ -1,19 +1,52 @@
 <!doctype html>
-<html>
+<html lang="vi">
 <head>
   <meta charset="utf-8">
   <title>Quản lý sản phẩm</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-  <h1>Sản phẩm</h1>
+<body class="bg-light">
 
-  <button id="loadSorted">Load products (price asc)</button>
-  <div id="products"></div>
+<div class="container py-4">
+  <h1 class="text-center text-success mb-4">Quản lý Sản phẩm</h1>
 
-  <h2>Products by Category</h2>
-  <input id="categoryId" placeholder="category id">
-  <button id="loadByCat">Load</button>
-  <div id="productsByCat"></div>
+  <!-- ================== PRODUCTS ================== -->
+  <div class="card shadow mb-4">
+    <div class="card-header bg-success text-white">Danh sách sản phẩm (giá tăng dần)</div>
+    <div class="card-body">
+      <button id="loadSorted" class="btn btn-success mb-3">Tải danh sách</button>
+      <div id="products" class="row g-2"></div>
+    </div>
+  </div>
+
+  <!-- ================== GET PRODUCT BY ID ================== -->
+  <div class="card shadow mb-4">
+    <div class="card-header bg-success text-white">Tìm sản phẩm theo ID</div>
+    <div class="card-body">
+      <input id="productId" class="form-control mb-2" placeholder="Nhập ID sản phẩm">
+      <button id="loadById" class="btn btn-success">Tìm</button>
+      <div id="productById" class="mt-3"></div>
+    </div>
+  </div>
+
+  <!-- ================== USERS ================== -->
+  <div class="card shadow mb-4">
+    <div class="card-header bg-success text-white">Danh sách người dùng</div>
+    <div class="card-body">
+      <button id="loadUsers" class="btn btn-success mb-3">Tải danh sách</button>
+      <ul id="users" class="list-group"></ul>
+    </div>
+  </div>
+
+  <!-- ================== CATEGORIES ================== -->
+  <div class="card shadow mb-4">
+    <div class="card-header bg-success text-white">Danh sách danh mục</div>
+    <div class="card-body">
+      <button id="loadCategories" class="btn btn-success mb-3">Tải danh sách</button>
+      <ul id="categories" class="list-group"></ul>
+    </div>
+  </div>
+</div>
 
 <script>
   async function graphqlQuery(query, variables) {
@@ -25,19 +58,50 @@
     return res.json();
   }
 
+  // Load products sorted by price
   document.getElementById('loadSorted').onclick = async () => {
-    const query = `query { productsSortedByPrice { id title price } }`;
+    const query = `query { getAllProductsSortedByPrice { id title price } }`;
     const resp = await graphqlQuery(query);
-    const list = resp.data.productsSortedByPrice || [];
-    document.getElementById('products').innerHTML = list.map(p => `<div>${p.id} - ${p.title} - ${p.price}</div>`).join('');
+    const list = resp.data.getAllProductsSortedByPrice || [];
+    document.getElementById('products').innerHTML = list
+      .map(p => `<div class="col-md-4"><div class="card border-success">
+                    <div class="card-body">
+                      <h5 class="card-title">${p.title}</h5>
+                      <p class="card-text">ID: ${p.id} <br> Giá: ${p.price}</p>
+                    </div>
+                 </div></div>`)
+      .join('');
   };
 
-  document.getElementById('loadByCat').onclick = async () => {
-    const catId = document.getElementById('categoryId').value;
-    const query = `query($catId: ID!){ productsByCategory(categoryId: $catId){ id title price } }`;
-    const resp = await graphqlQuery(query, {catId});
-    const list = resp.data.productsByCategory || [];
-    document.getElementById('productsByCat').innerHTML = list.map(p => `<div>${p.id} - ${p.title} - ${p.price}</div>`).join('');
+  // Get product by ID
+  document.getElementById('loadById').onclick = async () => {
+    const id = document.getElementById('productId').value;
+    const query = `query($id: ID!){ getProductById(id: $id){ id title price description } }`;
+    const resp = await graphqlQuery(query, {id});
+    const p = resp.data.getProductById;
+    document.getElementById('productById').innerHTML = p
+      ? `<div class="alert alert-success">ID: ${p.id} - ${p.title} - ${p.price} <br> Mô tả: ${p.description || "Không có"}</div>`
+      : `<div class="alert alert-danger">Không tìm thấy sản phẩm!</div>`;
+  };
+
+  // Load users
+  document.getElementById('loadUsers').onclick = async () => {
+    const query = `query { getAllUsers { id fullname email phone } }`;
+    const resp = await graphqlQuery(query);
+    const list = resp.data.getAllUsers || [];
+    document.getElementById('users').innerHTML = list
+      .map(u => `<li class="list-group-item">#${u.id} - ${u.fullname} (${u.email}, ${u.phone || "N/A"})</li>`)
+      .join('');
+  };
+
+  // Load categories
+  document.getElementById('loadCategories').onclick = async () => {
+    const query = `query { getAllCategories { id name images } }`;
+    const resp = await graphqlQuery(query);
+    const list = resp.data.getAllCategories || [];
+    document.getElementById('categories').innerHTML = list
+      .map(c => `<li class="list-group-item">#${c.id} - ${c.name} ${c.images ? "(ảnh: " + c.images + ")" : ""}</li>`)
+      .join('');
   };
 </script>
 

@@ -14,13 +14,11 @@ public class Category {
     private String name;
     private String images;
 
-    // Quan hệ N-N với User
     @ManyToMany(mappedBy = "categories")
     private Set<User> users = new HashSet<>();
 
     public Category() {}
 
-    // ===== Getter & Setter =====
     public Long getId() {
         return id;
     }

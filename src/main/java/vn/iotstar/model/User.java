@@ -27,13 +27,11 @@ public class User {
     )
     private Set<Category> categories = new HashSet<>();
 
-    // Quan hệ 1-N với Product (User có nhiều Product)
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Product> products = new HashSet<>();
 
     public User() {}
 
-    // ===== Getter & Setter =====
     public Integer getId() {
         return id;
     }

@@ -9,7 +9,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title;     // theo DB
+    private String title;    
     private Integer quantity;
 
     @Column(name = "description")
@@ -17,14 +17,12 @@ public class Product {
 
     private Double price;
 
-    // Quan hệ N-1: nhiều product thuộc 1 user
     @ManyToOne
-    @JoinColumn(name = "userid") // 👈 đúng với DB
+    @JoinColumn(name = "userid") 
     private User user;
 
     public Product() {}
 
-    // ===== Getter & Setter =====
     public Long getId() {
         return id;
     }
